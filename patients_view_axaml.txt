@@ -1,0 +1,107 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dg="using:Avalonia.Controls"
+             xmlns:m="using:ClinicCore.Models"
+             x:Class="ClinicCore.Views.PatientsView">
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="28,24,28,16">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Text="Patients" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock Name="PatientCount" Text="Loading..." Foreground="#6B7280" FontSize="13"/>
+                </StackPanel>
+                <Button Grid.Column="1" Background="#3B82F6" Foreground="White"
+                        Padding="16,8" CornerRadius="6" Click="AddPatient_Click">
+                    + Add Patient
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Form Panel -->
+        <Border Grid.Row="1" Name="FormPanel" IsVisible="False"
+                Background="White" Margin="28,0,28,16" Padding="24" CornerRadius="10">
+            <StackPanel>
+                <TextBlock Name="FormTitle" Text="Add New Patient"
+                           FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                <Grid ColumnDefinitions="*,16,*">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Full Name"/>
+                        <TextBox Name="TxtName" PlaceholderText="Full name" Margin="0,0,0,8"/>
+                        <TextBlock Text="Date of Birth"/>
+                        <TextBox Name="TxtDOB" PlaceholderText="YYYY-MM-DD" Margin="0,0,0,8"/>
+                        <TextBlock Text="Gender"/>
+                        <ComboBox Name="CmbGender" HorizontalAlignment="Stretch">
+                            <ComboBoxItem>Male</ComboBoxItem>
+                            <ComboBoxItem>Female</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="4">
+                        <TextBlock Text="Phone"/>
+                        <TextBox Name="TxtPhone" PlaceholderText="Phone number" Margin="0,0,0,8"/>
+                        <TextBlock Text="Address"/>
+                        <TextBox Name="TxtAddress" PlaceholderText="Address"
+                                 Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+                <StackPanel Orientation="Horizontal" Spacing="8"
+                            HorizontalAlignment="Right" Margin="0,12,0,0">
+                    <Button Background="#6B7280" Foreground="White"
+                            Padding="16,8" CornerRadius="6" Click="CancelForm_Click">
+                        Cancel
+                    </Button>
+                    <Button Background="#3B82F6" Foreground="White"
+                            Padding="16,8" CornerRadius="6" Click="SavePatient_Click">
+                        Save Patient
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Patient List -->
+        <Border Grid.Row="2" Margin="28,0,28,0" CornerRadius="10"
+                ClipToBounds="True" Background="White">
+            <StackPanel>
+                <!-- Header Row -->
+                <Grid ColumnDefinitions="60,200,120,90,140,*" Background="#F1F5F9">
+                    <TextBlock Grid.Column="0" Text="ID"        FontWeight="Bold" Padding="10,8" FontSize="13"/>
+                    <TextBlock Grid.Column="1" Text="Full Name" FontWeight="Bold" Padding="10,8" FontSize="13"/>
+                    <TextBlock Grid.Column="2" Text="DOB"       FontWeight="Bold" Padding="10,8" FontSize="13"/>
+                    <TextBlock Grid.Column="3" Text="Gender"    FontWeight="Bold" Padding="10,8" FontSize="13"/>
+                    <TextBlock Grid.Column="4" Text="Phone"     FontWeight="Bold" Padding="10,8" FontSize="13"/>
+                    <TextBlock Grid.Column="5" Text="Address"   FontWeight="Bold" Padding="10,8" FontSize="13"/>
+                </Grid>
+                <ListBox Name="PatientsGrid" Background="White">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="m:Patient">
+                            <Grid ColumnDefinitions="60,200,120,90,140,*">
+                                <TextBlock Grid.Column="0" Text="{Binding PatientID}" Padding="10,6" FontSize="13"/>
+                                <TextBlock Grid.Column="1" Text="{Binding FullName}"  Padding="10,6" FontSize="13"/>
+                                <TextBlock Grid.Column="2" Text="{Binding DateOfBirth}" Padding="10,6" FontSize="13"/>
+                                <TextBlock Grid.Column="3" Text="{Binding Gender}"    Padding="10,6" FontSize="13"/>
+                                <TextBlock Grid.Column="4" Text="{Binding Phone}"     Padding="10,6" FontSize="13"/>
+                                <TextBlock Grid.Column="5" Text="{Binding Address}"   Padding="10,6" FontSize="13"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+        <!-- Bottom Buttons -->
+        <Border Grid.Row="3" Padding="28,12">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Background="#6B7280" Foreground="White"
+                        Padding="16,8" CornerRadius="6" Click="EditPatient_Click">
+                    Edit Selected
+                </Button>
+                <Button Background="#EF4444" Foreground="White"
+                        Padding="16,8" CornerRadius="6" Click="DeletePatient_Click">
+                    Delete Selected
+                </Button>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</UserControl>
