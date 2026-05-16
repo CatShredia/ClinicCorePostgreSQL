@@ -28,5 +28,3 @@ cd ClinicCore
 dotnet run
 ```
 
-## 👩‍💻 Author
-**Diya** — [@DIYA73](https://github.com/DIYA73)
