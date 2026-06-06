@@ -40,9 +40,21 @@ jobs:
           Copy-Item database/seed.sql release/
           Compress-Archive -Path release/* -DestinationPath ClinicCore-win-x64.zip
 
+      - name: Resolve release tag
+        id: tag
+        shell: pwsh
+        run: |
+          if ("${{ github.ref_type }}" -eq "tag") {
+            echo "name=${{ github.ref_name }}" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "name=v1.0.${{ github.run_number }}" >> $env:GITHUB_OUTPUT
+          }
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.tag.outputs.name }}
+          name: Release ${{ steps.tag.outputs.name }}
           files: |
             ClinicCore-win-x64.zip
             publish/ClinicCore.exe
