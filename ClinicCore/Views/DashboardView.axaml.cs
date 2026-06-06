@@ -71,7 +71,7 @@ public partial class DashboardView : LocalizableUserControl
 
     private void UpdateInfoText()
     {
-        var dbInfo = L.Format("DbInfo", "clinicdb", "localhost:5432", L.Get("Connected"));
+        var dbInfo = L.Format("DbInfo", DBHelper.DatabaseLabel, DBHelper.ServerLabel, L.Get("Connected"));
         if (AuthSession.CurrentUser != null)
         {
             var authInfo = L.Format("AuthInfo",
