@@ -1,0 +1,49 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ClinicCore.LoginWindow"
+        Title="ClinicCore — Login"
+        Width="420" Height="520"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        Background="#F0F4F8">
+
+    <Border Margin="32" Background="White" CornerRadius="16" Padding="32">
+        <StackPanel Spacing="16">
+            <StackPanel Spacing="4" HorizontalAlignment="Center" Margin="0,0,0,8">
+                <TextBlock Text="ClinicCore" FontSize="28" FontWeight="Bold" Foreground="#1A1F36" HorizontalAlignment="Center"/>
+                <TextBlock Name="TxtSubtitle" Text="Вход в систему" Foreground="#6B7280" FontSize="14" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+                <TextBlock Name="LblUsername" Text="Логин" Foreground="#374151" FontSize="13"/>
+                <TextBox Name="TxtUsername" PlaceholderText="admin" Padding="12,10"/>
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+                <TextBlock Name="LblPassword" Text="Пароль" Foreground="#374151" FontSize="13"/>
+                <TextBox Name="TxtPassword" PasswordChar="●" PlaceholderText="••••••••" Padding="12,10"/>
+            </StackPanel>
+
+            <TextBlock Name="TxtError" Text="" Foreground="#EF4444" FontSize="12" TextWrapping="Wrap" IsVisible="False"/>
+
+            <Button Name="BtnLogin" Background="#3B82F6" Foreground="White"
+                    Padding="16,12" CornerRadius="8" FontSize="14" FontWeight="SemiBold"
+                    HorizontalAlignment="Stretch" Click="Login_Click" Margin="0,8,0,0">
+                Войти
+            </Button>
+
+            <Border Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,8,0,0">
+                <StackPanel Spacing="4">
+                    <TextBlock Name="LblHint" Text="Тестовые учётные записи:" Foreground="#6B7280" FontSize="11" FontWeight="SemiBold"/>
+                    <TextBlock Name="TxtHint" Text="admin / admin123" Foreground="#9CA3AF" FontSize="11"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center" Margin="0,4,0,0">
+                <Button Name="BtnLangEn" Background="Transparent" Foreground="#6B7280" Padding="10,4" CornerRadius="6" FontSize="12" Click="LangEn_Click">EN</Button>
+                <TextBlock Text="|" Foreground="#D1D5DB" VerticalAlignment="Center"/>
+                <Button Name="BtnLangRu" Background="Transparent" Foreground="#3B82F6" Padding="10,4" CornerRadius="6" FontSize="12" FontWeight="SemiBold" Click="LangRu_Click">RU</Button>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

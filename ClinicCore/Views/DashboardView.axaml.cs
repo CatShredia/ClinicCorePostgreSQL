@@ -1,5 +1,6 @@
 using System;
 using Avalonia.Controls;
+using ClinicCore.Auth;
 using ClinicCore.Database;
 using ClinicCore.Localization;
 using Npgsql;
@@ -33,7 +34,7 @@ public partial class DashboardView : LocalizableUserControl
         LblSystemInfo.Text = L.Get("SystemInfo");
 
         if (_connected)
-            TxtInfo.Text = L.Format("DbInfo", "clinicdb", "localhost:5432", L.Get("Connected"));
+            UpdateInfoText();
         else if (TxtInfo.Text != L.Get("Loading"))
             TxtInfo.Text = L.Get("DbNotConnected");
 
@@ -58,13 +59,29 @@ public partial class DashboardView : LocalizableUserControl
             TxtDoctors.Text       = _doctors.ToString();
             TxtAppointments.Text  = _appointments.ToString();
             TxtPrescriptions.Text = _prescriptions.ToString();
-            TxtInfo.Text = L.Format("DbInfo", "clinicdb", "localhost:5432", L.Get("Connected"));
+            UpdateInfoText();
         }
         catch
         {
             _connected = false;
             TxtPatients.Text = TxtDoctors.Text = TxtAppointments.Text = TxtPrescriptions.Text = "?";
             TxtInfo.Text = L.Get("DbNotConnected");
+        }
+    }
+
+    private void UpdateInfoText()
+    {
+        var dbInfo = L.Format("DbInfo", "clinicdb", "localhost:5432", L.Get("Connected"));
+        if (AuthSession.CurrentUser != null)
+        {
+            var authInfo = L.Format("AuthInfo",
+                AuthSession.CurrentUser.FullName,
+                L.TranslateRole(AuthSession.CurrentUser.Role));
+            TxtInfo.Text = dbInfo + Environment.NewLine + authInfo;
+        }
+        else
+        {
+            TxtInfo.Text = dbInfo;
         }
     }
 

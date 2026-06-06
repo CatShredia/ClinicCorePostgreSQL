@@ -99,6 +99,26 @@ public static class L
         ["StatusCompleted"]       = ["Completed", "Завершено"],
         ["StatusCancelled"]       = ["Cancelled", "Отменено"],
         ["StatusRescheduled"]     = ["Rescheduled", "Перенесено"],
+
+        ["LoginTitle"]            = ["ClinicCore — Login", "ClinicCore — Вход"],
+        ["LoginSubtitle"]         = ["Sign in to continue", "Вход в систему"],
+        ["Username"]              = ["Username", "Логин"],
+        ["Password"]              = ["Password", "Пароль"],
+        ["PlaceholderUsername"]   = ["admin", "admin"],
+        ["PlaceholderPassword"]   = ["••••••••", "••••••••"],
+        ["Login"]                 = ["Sign In", "Войти"],
+        ["LoginFailed"]           = ["Invalid username or password", "Неверный логин или пароль"],
+        ["TestAccounts"]          = ["Test accounts:", "Тестовые учётные записи:"],
+        ["TestAccountsHint"]      = ["admin / admin123  •  doctor / doctor123  •  reception / reception123", "admin / admin123  •  doctor / doctor123  •  reception / reception123"],
+        ["Logout"]                = ["Logout", "Выйти"],
+        ["UserRole"]              = ["Role: {0}", "Роль: {0}"],
+        ["AuthInfo"]              = ["User: {0} ({1})  |  JWT: active", "Пользователь: {0} ({1})  |  JWT: активен"],
+
+        ["RoleAdmin"]             = ["Administrator", "Администратор"],
+        ["RoleDoctor"]            = ["Doctor", "Врач"],
+        ["RoleReceptionist"]      = ["Receptionist", "Регистратор"],
+        ["RoleNurse"]             = ["Nurse", "Медсестра"],
+        ["RoleManager"]           = ["Manager", "Менеджер"],
     };
 
     public static string Get(string key)
@@ -129,4 +149,14 @@ public static class L
 
     public static string GenderToDb(string? display) =>
         display == Get("Female") ? "Female" : "Male";
+
+    public static string TranslateRole(string? role) => role switch
+    {
+        "Admin"        => Get("RoleAdmin"),
+        "Doctor"       => Get("RoleDoctor"),
+        "Receptionist" => Get("RoleReceptionist"),
+        "Nurse"        => Get("RoleNurse"),
+        "Manager"      => Get("RoleManager"),
+        _              => role ?? ""
+    };
 }
