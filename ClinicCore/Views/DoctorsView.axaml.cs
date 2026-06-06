@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using ClinicCore.Auth;
 using ClinicCore.Database;
 using ClinicCore.Localization;
 using ClinicCore.Models;
@@ -47,6 +48,8 @@ public partial class DoctorsView : LocalizableUserControl
         FormTitle.Text = _editingId == -1 ? L.Get("FormAddDoctor") : L.Get("FormEditDoctor");
         if (_doctorCount > 0)
             DoctorCount.Text = L.Format("DoctorsCount", _doctorCount);
+
+        ViewPermissions.ApplyCrudButtons("Doctors", BtnAdd, BtnEdit, BtnDelete);
     }
 
     private void LoadDoctors()

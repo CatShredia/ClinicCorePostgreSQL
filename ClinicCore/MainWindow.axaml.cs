@@ -16,9 +16,16 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        LocalizationService.LanguageChanged += ApplyLocalization;
+        LocalizationService.LanguageChanged += OnLanguageChanged;
         ApplyLocalization();
+        ApplyRoleAccess();
         NavigateTo("Dashboard");
+    }
+
+    private void OnLanguageChanged()
+    {
+        ApplyLocalization();
+        ApplyRoleAccess();
     }
 
     private void ApplyLocalization()
@@ -32,6 +39,7 @@ public partial class MainWindow : Window
         BtnDoctors.Content = L.Get("NavDoctors");
         BtnAppointments.Content = L.Get("NavAppointments");
         BtnPrescriptions.Content = L.Get("NavPrescriptions");
+        BtnUsers.Content = L.Get("NavUsers");
         BtnLogout.Content = L.Get("Logout");
 
         if (AuthSession.CurrentUser != null)
@@ -42,6 +50,20 @@ public partial class MainWindow : Window
 
         BtnLangEn.Classes.Set("active", LocalizationService.Current == AppLanguage.English);
         BtnLangRu.Classes.Set("active", LocalizationService.Current == AppLanguage.Russian);
+    }
+
+    private void ApplyRoleAccess()
+    {
+        var role = AuthSession.CurrentUser?.Role;
+        BtnDashboard.IsVisible     = RolePermissions.CanViewPage(role, "Dashboard");
+        BtnPatients.IsVisible      = RolePermissions.CanViewPage(role, "Patients");
+        BtnDoctors.IsVisible       = RolePermissions.CanViewPage(role, "Doctors");
+        BtnAppointments.IsVisible  = RolePermissions.CanViewPage(role, "Appointments");
+        BtnPrescriptions.IsVisible = RolePermissions.CanViewPage(role, "Prescriptions");
+        BtnUsers.IsVisible         = RolePermissions.CanViewPage(role, "Users");
+
+        if (!RolePermissions.CanViewPage(role, _currentPage))
+            NavigateTo("Dashboard");
     }
 
     private void LangEn_Click(object? sender, RoutedEventArgs e)
@@ -76,6 +98,10 @@ public partial class MainWindow : Window
             return;
         }
 
+        var role = AuthSession.CurrentUser?.Role;
+        if (!RolePermissions.CanViewPage(role, page))
+            return;
+
         _currentPage = page;
 
         if (btn == null)
@@ -85,6 +111,7 @@ public partial class MainWindow : Window
                 "Doctors"       => BtnDoctors,
                 "Appointments"  => BtnAppointments,
                 "Prescriptions" => BtnPrescriptions,
+                "Users"         => BtnUsers,
                 _               => BtnDashboard
             };
 
@@ -100,6 +127,7 @@ public partial class MainWindow : Window
             "Doctors"       => new DoctorsView(),
             "Appointments"  => new AppointmentsView(),
             "Prescriptions" => new PrescriptionsView(),
+            "Users"         => new UsersView(),
             _               => new DashboardView()
         };
     }

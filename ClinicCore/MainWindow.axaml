@@ -93,6 +93,7 @@
                         <Button Name="BtnDoctors" Classes="navBtn" Tag="Doctors" Click="Nav_Click">Doctors</Button>
                         <Button Name="BtnAppointments" Classes="navBtn" Tag="Appointments" Click="Nav_Click">Appointments</Button>
                         <Button Name="BtnPrescriptions" Classes="navBtn" Tag="Prescriptions" Click="Nav_Click">Prescriptions</Button>
+                        <Button Name="BtnUsers" Classes="navBtn" Tag="Users" Click="Nav_Click">Users</Button>
                     </StackPanel>
                 </StackPanel>
             </DockPanel>

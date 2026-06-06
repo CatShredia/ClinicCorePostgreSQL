@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="ClinicCore.LoginWindow"
         Title="ClinicCore — Login"
-        Width="420" Height="520"
+        Width="440" Height="560"
         CanResize="False"
         WindowStartupLocation="CenterScreen"
         Background="#F0F4F8">
@@ -33,9 +33,12 @@
             </Button>
 
             <Border Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,8,0,0">
-                <StackPanel Spacing="4">
+                <StackPanel Spacing="3">
                     <TextBlock Name="LblHint" Text="Тестовые учётные записи:" Foreground="#6B7280" FontSize="11" FontWeight="SemiBold"/>
-                    <TextBlock Name="TxtHint" Text="admin / admin123" Foreground="#9CA3AF" FontSize="11"/>
+                    <TextBlock Name="TxtHintAdmin" Text="admin / admin123" Foreground="#9CA3AF" FontSize="11"/>
+                    <TextBlock Name="TxtHintDoctor" Text="doctor / doctor123" Foreground="#9CA3AF" FontSize="11"/>
+                    <TextBlock Name="TxtHintReception" Text="reception / reception123" Foreground="#9CA3AF" FontSize="11"/>
+                    <TextBlock Name="TxtHintStaff" Text="user04..user30 / pass123" Foreground="#9CA3AF" FontSize="11"/>
                 </StackPanel>
             </Border>
 

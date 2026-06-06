@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using ClinicCore.Auth;
 using ClinicCore.Database;
 using ClinicCore.Localization;
 using ClinicCore.Models;
@@ -50,6 +51,8 @@ public partial class PrescriptionsView : LocalizableUserControl
         FormTitle.Text = _editingId == -1 ? L.Get("FormAddPrescription") : L.Get("FormEditPrescription");
         if (_rxCount > 0)
             RxCount.Text = L.Format("RxCount", _rxCount);
+
+        ViewPermissions.ApplyCrudButtons("Prescriptions", BtnAdd, BtnEdit, BtnDelete);
     }
 
     private void LoadRxs()

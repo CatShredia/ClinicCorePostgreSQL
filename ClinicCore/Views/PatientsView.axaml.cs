@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using ClinicCore.Auth;
 using ClinicCore.Database;
 using ClinicCore.Localization;
 using ClinicCore.Models;
@@ -60,6 +61,8 @@ public partial class PatientsView : LocalizableUserControl
 
         if (_patients.Count > 0)
             LoadPatients();
+
+        ViewPermissions.ApplyCrudButtons("Patients", BtnAdd, BtnEdit, BtnDelete);
     }
 
     private void LoadPatients()

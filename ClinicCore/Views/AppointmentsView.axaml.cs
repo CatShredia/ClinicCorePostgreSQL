@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using ClinicCore.Auth;
 using ClinicCore.Database;
 using ClinicCore.Localization;
 using ClinicCore.Models;
@@ -51,6 +52,8 @@ public partial class AppointmentsView : LocalizableUserControl
 
         if (_appts.Count > 0)
             LoadAppts();
+
+        ViewPermissions.ApplyCrudButtons("Appointments", BtnAdd, BtnEdit, BtnDelete);
     }
 
     private void LoadAppts()

@@ -26,7 +26,10 @@ public partial class LoginWindow : Window
         TxtPassword.PlaceholderText = L.Get("PlaceholderPassword");
         BtnLogin.Content = L.Get("Login");
         LblHint.Text = L.Get("TestAccounts");
-        TxtHint.Text = L.Get("TestAccountsHint");
+        TxtHintAdmin.Text = L.Get("TestAccountAdmin");
+        TxtHintDoctor.Text = L.Get("TestAccountDoctor");
+        TxtHintReception.Text = L.Get("TestAccountReception");
+        TxtHintStaff.Text = L.Get("TestAccountStaff");
     }
 
     private void LangEn_Click(object? sender, RoutedEventArgs e)

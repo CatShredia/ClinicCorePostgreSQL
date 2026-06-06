@@ -15,6 +15,7 @@ public static class L
         ["NavDoctors"]            = ["Doctors", "Врачи"],
         ["NavAppointments"]       = ["Appointments", "Записи"],
         ["NavPrescriptions"]      = ["Prescriptions", "Рецепты"],
+        ["NavUsers"]              = ["Users", "Пользователи"],
 
         ["DashboardTitle"]        = ["Dashboard", "Панель управления"],
         ["Welcome"]               = ["Welcome to ClinicCore Hospital Records System", "Добро пожаловать в систему ClinicCore"],
@@ -109,7 +110,15 @@ public static class L
         ["Login"]                 = ["Sign In", "Войти"],
         ["LoginFailed"]           = ["Invalid username or password", "Неверный логин или пароль"],
         ["TestAccounts"]          = ["Test accounts:", "Тестовые учётные записи:"],
-        ["TestAccountsHint"]      = ["admin / admin123  •  doctor / doctor123  •  reception / reception123", "admin / admin123  •  doctor / doctor123  •  reception / reception123"],
+        ["TestAccountAdmin"]      = ["admin / admin123", "admin / admin123"],
+        ["TestAccountDoctor"]     = ["doctor / doctor123", "doctor / doctor123"],
+        ["TestAccountReception"]  = ["reception / reception123", "reception / reception123"],
+        ["TestAccountStaff"]      = ["user04..user30 / pass123", "user04..user30 / pass123"],
+
+        ["AccessMatrixTitle"]     = ["Access rights for selected role:", "Права доступа для выбранной роли:"],
+        ["AccessFull"]            = ["full access", "полный доступ"],
+        ["AccessRead"]            = ["read only", "только просмотр"],
+        ["AccessNone"]            = ["no access", "нет доступа"],
         ["Logout"]                = ["Logout", "Выйти"],
         ["UserRole"]              = ["Role: {0}", "Роль: {0}"],
         ["AuthInfo"]              = ["User: {0} ({1})  |  JWT: active", "Пользователь: {0} ({1})  |  JWT: активен"],
@@ -119,6 +128,21 @@ public static class L
         ["RoleReceptionist"]      = ["Receptionist", "Регистратор"],
         ["RoleNurse"]             = ["Nurse", "Медсестра"],
         ["RoleManager"]           = ["Manager", "Менеджер"],
+
+        ["Users"]                 = ["Users", "Пользователи"],
+        ["UsersCount"]            = ["{0} user(s) registered", "{0} пользователей"],
+        ["AddUser"]               = ["+ Add User", "+ Добавить пользователя"],
+        ["FormAddUser"]           = ["Add New User", "Новый пользователь"],
+        ["FormEditUser"]          = ["Edit User", "Редактировать пользователя"],
+        ["SaveUser"]              = ["Save User", "Сохранить"],
+        ["UserRoleLabel"]         = ["Role", "Роль"],
+        ["Active"]                = ["Active", "Активен"],
+        ["Inactive"]              = ["Inactive", "Неактивен"],
+        ["LastLogin"]             = ["Last Login", "Последний вход"],
+        ["LeaveBlankToKeep"]      = ["Leave blank to keep current password", "Оставьте пустым, чтобы не менять пароль"],
+        ["CannotDeleteSelf"]      = ["Cannot delete your own account", "Нельзя удалить свою учётную запись"],
+        ["AccessDenied"]          = ["Access denied", "Доступ запрещён"],
+        ["ReadOnlyMode"]          = ["Read-only mode", "Режим только просмотра"],
     };
 
     public static string Get(string key)
