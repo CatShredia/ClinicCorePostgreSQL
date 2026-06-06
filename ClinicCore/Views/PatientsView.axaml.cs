@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ClinicCore.Database;
 using ClinicCore.Models;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using System.Collections.ObjectModel;
 using System;
 
@@ -26,7 +26,7 @@ public partial class PatientsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            var cmd = new SqlCommand("SELECT * FROM Patients ORDER BY PatientID DESC", conn);
+            var cmd = new NpgsqlCommand(@"SELECT * FROM ""Patients"" ORDER BY ""PatientID"" DESC", conn);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -70,18 +70,18 @@ public partial class PatientsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            SqlCommand cmd;
+            NpgsqlCommand cmd;
             if (_editingId == -1)
             {
-                cmd = new SqlCommand(@"INSERT INTO Patients 
-                    (FullName, DateOfBirth, Gender, Phone, Address)
+                cmd = new NpgsqlCommand(@"INSERT INTO ""Patients"" 
+                    (""FullName"", ""DateOfBirth"", ""Gender"", ""Phone"", ""Address"")
                     VALUES (@n, @d, @g, @p, @a)", conn);
             }
             else
             {
-                cmd = new SqlCommand(@"UPDATE Patients SET 
-                    FullName=@n, DateOfBirth=@d, Gender=@g, Phone=@p, Address=@a
-                    WHERE PatientID=@id", conn);
+                cmd = new NpgsqlCommand(@"UPDATE ""Patients"" SET 
+                    ""FullName""=@n, ""DateOfBirth""=@d, ""Gender""=@g, ""Phone""=@p, ""Address""=@a
+                    WHERE ""PatientID""=@id", conn);
                 cmd.Parameters.AddWithValue("@id", _editingId);
             }
             cmd.Parameters.AddWithValue("@n", TxtName.Text);
@@ -130,7 +130,7 @@ public partial class PatientsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            var cmd = new SqlCommand("DELETE FROM Patients WHERE PatientID=@id", conn);
+            var cmd = new NpgsqlCommand(@"DELETE FROM ""Patients"" WHERE ""PatientID""=@id", conn);
             cmd.Parameters.AddWithValue("@id", p.PatientID);
             cmd.ExecuteNonQuery();
         }

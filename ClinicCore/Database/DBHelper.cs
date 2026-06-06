@@ -1,16 +1,15 @@
-using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace ClinicCore.Database;
 
 public class DBHelper
 {
     private static readonly string ConnStr =
-        "Server=localhost,1433;Database=ClinicCoreDB;User Id=sa;" +
-        "Password=YourPassword123!;TrustServerCertificate=True;";
+            "Host=localhost;Port=5432;Database=clinicdb;Username=postgres;Password=qwerty123";
 
-    public static SqlConnection GetConnection()
+    public static NpgsqlConnection GetConnection()
     {
-        var conn = new SqlConnection(ConnStr);
+        var conn = new NpgsqlConnection(ConnStr);
         conn.Open();
         return conn;
     }

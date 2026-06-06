@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ClinicCore.Database;
 using ClinicCore.Models;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using System.Collections.ObjectModel;
 
 namespace ClinicCore.Views;
@@ -25,7 +25,7 @@ public partial class PrescriptionsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            var cmd = new SqlCommand("SELECT * FROM Prescriptions ORDER BY PrescriptionID DESC", conn);
+            var cmd = new NpgsqlCommand(@"SELECT * FROM ""Prescriptions"" ORDER BY ""PrescriptionID"" DESC", conn);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -66,12 +66,12 @@ public partial class PrescriptionsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            SqlCommand cmd;
+            NpgsqlCommand cmd;
             if (_editingId == -1)
-                cmd = new SqlCommand("INSERT INTO Prescriptions (PatientID,DoctorID,Medication,Dosage,Notes) VALUES (@p,@d,@m,@ds,@n)", conn);
+                cmd = new NpgsqlCommand(@"INSERT INTO ""Prescriptions"" (""PatientID"",""DoctorID"",""Medication"",""Dosage"",""Notes"") VALUES (@p,@d,@m,@ds,@n)", conn);
             else
             {
-                cmd = new SqlCommand("UPDATE Prescriptions SET PatientID=@p,DoctorID=@d,Medication=@m,Dosage=@ds,Notes=@n WHERE PrescriptionID=@id", conn);
+                cmd = new NpgsqlCommand(@"UPDATE ""Prescriptions"" SET ""PatientID""=@p,""DoctorID""=@d,""Medication""=@m,""Dosage""=@ds,""Notes""=@n WHERE ""PrescriptionID""=@id", conn);
                 cmd.Parameters.AddWithValue("@id", _editingId);
             }
             cmd.Parameters.AddWithValue("@p", int.TryParse(TxtPatientID.Text, out var pid) ? pid : 0);
@@ -106,7 +106,7 @@ public partial class PrescriptionsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            var cmd = new SqlCommand("DELETE FROM Prescriptions WHERE PrescriptionID=@id", conn);
+            var cmd = new NpgsqlCommand(@"DELETE FROM ""Prescriptions"" WHERE ""PrescriptionID""=@id", conn);
             cmd.Parameters.AddWithValue("@id", rx.PrescriptionID);
             cmd.ExecuteNonQuery();
         }

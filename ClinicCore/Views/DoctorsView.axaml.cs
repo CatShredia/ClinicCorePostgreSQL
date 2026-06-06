@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ClinicCore.Database;
 using ClinicCore.Models;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using System.Collections.ObjectModel;
 using System;
 
@@ -26,7 +26,7 @@ public partial class DoctorsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            var cmd = new SqlCommand("SELECT * FROM Doctors ORDER BY DoctorID DESC", conn);
+            var cmd = new NpgsqlCommand(@"SELECT * FROM ""Doctors"" ORDER BY ""DoctorID"" DESC", conn);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -66,12 +66,12 @@ public partial class DoctorsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            SqlCommand cmd;
+            NpgsqlCommand cmd;
             if (_editingId == -1)
-                cmd = new SqlCommand("INSERT INTO Doctors (FullName,Specialty,Phone,Email) VALUES (@n,@s,@p,@e)", conn);
+                cmd = new NpgsqlCommand(@"INSERT INTO ""Doctors"" (""FullName"",""Specialty"",""Phone"",""Email"") VALUES (@n,@s,@p,@e)", conn);
             else
             {
-                cmd = new SqlCommand("UPDATE Doctors SET FullName=@n,Specialty=@s,Phone=@p,Email=@e WHERE DoctorID=@id", conn);
+                cmd = new NpgsqlCommand(@"UPDATE ""Doctors"" SET ""FullName""=@n,""Specialty""=@s,""Phone""=@p,""Email""=@e WHERE ""DoctorID""=@id", conn);
                 cmd.Parameters.AddWithValue("@id", _editingId);
             }
             cmd.Parameters.AddWithValue("@n", TxtName.Text);
@@ -104,7 +104,7 @@ public partial class DoctorsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            var cmd = new SqlCommand("DELETE FROM Doctors WHERE DoctorID=@id", conn);
+            var cmd = new NpgsqlCommand(@"DELETE FROM ""Doctors"" WHERE ""DoctorID""=@id", conn);
             cmd.Parameters.AddWithValue("@id", d.DoctorID);
             cmd.ExecuteNonQuery();
         }

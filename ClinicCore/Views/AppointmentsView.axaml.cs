@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ClinicCore.Database;
 using ClinicCore.Models;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using System.Collections.ObjectModel;
 using System;
 
@@ -26,7 +26,7 @@ public partial class AppointmentsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            var cmd = new SqlCommand("SELECT * FROM Appointments ORDER BY AppointmentID DESC", conn);
+            var cmd = new NpgsqlCommand(@"SELECT * FROM ""Appointments"" ORDER BY ""AppointmentID"" DESC", conn);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -66,12 +66,12 @@ public partial class AppointmentsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            SqlCommand cmd;
+            NpgsqlCommand cmd;
             if (_editingId == -1)
-                cmd = new SqlCommand("INSERT INTO Appointments (PatientID,DoctorID,AppointmentDate,Status,Notes) VALUES (@p,@d,@dt,@s,@n)", conn);
+                cmd = new NpgsqlCommand(@"INSERT INTO ""Appointments"" (""PatientID"",""DoctorID"",""AppointmentDate"",""Status"",""Notes"") VALUES (@p,@d,@dt,@s,@n)", conn);
             else
             {
-                cmd = new SqlCommand("UPDATE Appointments SET PatientID=@p,DoctorID=@d,AppointmentDate=@dt,Status=@s,Notes=@n WHERE AppointmentID=@id", conn);
+                cmd = new NpgsqlCommand(@"UPDATE ""Appointments"" SET ""PatientID""=@p,""DoctorID""=@d,""AppointmentDate""=@dt,""Status""=@s,""Notes""=@n WHERE ""AppointmentID""=@id", conn);
                 cmd.Parameters.AddWithValue("@id", _editingId);
             }
             cmd.Parameters.AddWithValue("@p", int.TryParse(TxtPatientID.Text, out var pid) ? pid : 0);
@@ -105,7 +105,7 @@ public partial class AppointmentsView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            var cmd = new SqlCommand("DELETE FROM Appointments WHERE AppointmentID=@id", conn);
+            var cmd = new NpgsqlCommand(@"DELETE FROM ""Appointments"" WHERE ""AppointmentID""=@id", conn);
             cmd.Parameters.AddWithValue("@id", a.AppointmentID);
             cmd.ExecuteNonQuery();
         }
