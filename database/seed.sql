@@ -1,6 +1,6 @@
 -- ClinicCore test data seed (30+ rows per table)
--- Run after schema.sql: psql -h localhost -U postgres -d clinicdb -f database/seed.sql
--- File encoding: UTF-8, ASCII-safe strings (no Cyrillic) for Windows psql compatibility
+-- Run after schema.sql
+-- Encoding: UTF-8. On Windows: chcp 65001 before psql, or set PGCLIENTENCODING=UTF8
 
 SET client_encoding TO 'UTF8';
 
@@ -12,11 +12,11 @@ RESTART IDENTITY CASCADE;
 
 -- Roles (5)
 INSERT INTO "Roles" ("RoleName", "Description") VALUES
-('Admin',        'System administrator'),
-('Doctor',       'Medical doctor'),
-('Receptionist', 'Front desk staff'),
-('Nurse',        'Nursing staff'),
-('Manager',      'Clinic manager');
+('Admin',        'Администратор системы'),
+('Doctor',       'Врач'),
+('Receptionist', 'Регистратор'),
+('Nurse',        'Медсестра'),
+('Manager',      'Менеджер клиники');
 
 -- Users (30)
 INSERT INTO "Users" ("Username", "PasswordHash", "FullName", "RoleID")
@@ -37,10 +37,10 @@ SELECT
         gen_salt('bf')
     ),
     CASE i
-        WHEN 1 THEN 'System Administrator'
-        WHEN 2 THEN 'Dr. Ivan Petrov'
-        WHEN 3 THEN 'Anna Smirnova'
-        ELSE 'Staff Member ' || i
+        WHEN 1 THEN 'Администратор Системы'
+        WHEN 2 THEN 'Доктор Иван Петров'
+        WHEN 3 THEN 'Анна Смирнова'
+        ELSE 'Сотрудник ' || i
     END,
     CASE i
         WHEN 1 THEN 1
@@ -50,7 +50,7 @@ SELECT
     END
 FROM generate_series(1, 30) AS i;
 
--- RefreshTokens (30) - linked to existing users
+-- RefreshTokens (30)
 INSERT INTO "RefreshTokens" ("UserID", "Token", "ExpiresAt", "IsRevoked")
 SELECT
     u."UserID",
@@ -65,43 +65,43 @@ LIMIT 30;
 INSERT INTO "Patients" ("FullName", "DateOfBirth", "Gender", "Phone", "Address")
 SELECT
     (ARRAY[
-        'Ivanov Ivan Ivanovich', 'Petrova Maria Sergeevna', 'Sidorov Alexey Petrovich',
-        'Kozlova Elena Viktorovna', 'Novikov Dmitry Andreevich', 'Morozova Anna Igorevna',
-        'Volkov Sergey Nikolaevich', 'Sokolova Olga Pavlovna', 'Lebedev Maxim Olegovich',
-        'Kuznetsova Tatyana Romanovna', 'Popov Artyom Vladimirovich', 'Vasilieva Natalya Yuryevna',
-        'Smirnov Pavel Gennadievich', 'Fedorova Ksenia Dmitrievna', 'Mikhailov Roman Stepanovich',
-        'Orlova Victoria Alexandrovna', 'Andreev Kirill Borisovich', 'Nikolaeva Yulia Konstantinovna',
-        'Egorov Vladislav Igorevich', 'Zakharova Svetlana Mikhailovna', 'Pavlov Georgy Anatolyevich',
-        'Semenova Darya Evgenievna', 'Golubev Ilya Fedorovich', 'Vinogradova Alina Sergeevna',
-        'Borisov Timofey Valerievich', 'Frolova Ekaterina Olegovna', 'Komarov Arseny Pavlovich',
-        'Danilova Polina Andreevna', 'Zhukov Matvey Nikolaevich', 'Romanova Veronika Ilyinichna'
+        'Иванов Иван Иванович', 'Петрова Мария Сергеевна', 'Сидоров Алексей Петрович',
+        'Козлова Елена Викторовна', 'Новиков Дмитрий Андреевич', 'Морозова Анна Игоревна',
+        'Волков Сергей Николаевич', 'Соколова Ольга Павловна', 'Лебедев Максим Олегович',
+        'Кузнецова Татьяна Романовна', 'Попов Артём Владимирович', 'Васильева Наталья Юрьевна',
+        'Смирнов Павел Геннадьевич', 'Федорова Ксения Дмитриевна', 'Михайлов Роман Степанович',
+        'Орлова Виктория Александровна', 'Андреев Кирилл Борисович', 'Николаева Юлия Константиновна',
+        'Егоров Владислав Игоревич', 'Захарова Светлана Михайловна', 'Павлов Георгий Анатольевич',
+        'Семёнова Дарья Евгеньевна', 'Голубев Илья Фёдорович', 'Виноградова Алина Сергеевна',
+        'Борисов Тимофей Валерьевич', 'Фролова Екатерина Олеговна', 'Комаров Арсений Павлович',
+        'Данилова Полина Андреевна', 'Жуков Матвей Николаевич', 'Романова Вероника Ильинична'
     ])[i],
     TO_CHAR(DATE '1960-01-01' + (i * 397 || ' days')::INTERVAL, 'YYYY-MM-DD'),
     CASE WHEN i % 2 = 0 THEN 'Female' ELSE 'Male' END,
     '+7 (9' || LPAD((10 + (i % 89))::TEXT, 2, '0') || ') ' ||
         LPAD((100 + i)::TEXT, 3, '0') || '-' ||
         LPAD((2000 + i * 37 % 9000)::TEXT, 4, '0'),
-    'Moscow, Sample St. ' || i
+    'г. Москва, ул. Примерная, д. ' || i
 FROM generate_series(1, 30) AS i;
 
 -- Doctors (30)
 INSERT INTO "Doctors" ("FullName", "Specialty", "Phone", "Email")
 SELECT
-    'Dr. ' || (ARRAY[
-        'Alexeev V.P.', 'Belova N.S.', 'Gromov A.K.', 'Davydova L.M.', 'Ershov I.T.',
-        'Zhuravlev O.R.', 'Zaitseva E.A.', 'Ivanchenko M.V.', 'Kalinina S.G.', 'Larionov P.D.',
-        'Medvedeva T.I.', 'Nesterov K.L.', 'Osipova R.N.', 'Petrenko D.S.', 'Rybakov V.E.',
-        'Savelyeva A.Yu.', 'Tikhonov G.M.', 'Uvarova O.V.', 'Fomin S.A.', 'Kharitonov N.P.',
-        'Tsvetkova M.K.', 'Chernov A.B.', 'Shirokov I.G.', 'Shchukina E.L.', 'Yudin V.S.',
-        'Yakovlev P.N.', 'Antonov R.D.', 'Baranova K.O.', 'Vlasov T.E.', 'Grigoriev L.Kh.'
+    'Доктор ' || (ARRAY[
+        'Алексеев В.П.', 'Белова Н.С.', 'Громов А.К.', 'Давыдова Л.М.', 'Ершов И.Т.',
+        'Журавлёв О.Р.', 'Зайцева Е.А.', 'Иванченко М.В.', 'Калинина С.Г.', 'Ларионов П.Д.',
+        'Медведева Т.И.', 'Нестеров К.Л.', 'Осипова Р.Н.', 'Петренко Д.С.', 'Рыбаков В.Е.',
+        'Савельева А.Ю.', 'Тихонов Г.М.', 'Уварова О.В.', 'Фомин С.А.', 'Харитонов Н.П.',
+        'Цветкова М.К.', 'Чернов А.Б.', 'Широков И.Г.', 'Щукина Е.Л.', 'Юдин В.С.',
+        'Яковлев П.Н.', 'Антонов Р.Д.', 'Баранова К.О.', 'Власов Т.Е.', 'Григорьев Л.Х.'
     ])[i],
     (ARRAY[
-        'Therapist', 'Cardiologist', 'Neurologist', 'Surgeon', 'Pediatrician',
-        'Ophthalmologist', 'Dermatologist', 'Orthopedist', 'Gynecologist', 'Urologist',
-        'Endocrinologist', 'Psychiatrist', 'Oncologist', 'ENT', 'Dentist',
-        'Allergist', 'Gastroenterologist', 'Pulmonologist', 'Rheumatologist', 'Infectiologist',
-        'Nephrologist', 'Hematologist', 'Physiotherapist', 'Anesthesiologist', 'Radiologist',
-        'Pathologist', 'Family Doctor', 'Sports Medicine', 'Plastic Surgeon', 'Traumatologist'
+        'Терапевт', 'Кардиолог', 'Невролог', 'Хирург', 'Педиатр',
+        'Офтальмолог', 'Дерматолог', 'Ортопед', 'Гинеколог', 'Уролог',
+        'Эндокринолог', 'Психиатр', 'Онколог', 'ЛОР', 'Стоматолог',
+        'Аллерголог', 'Гастроэнтеролог', 'Пульмонолог', 'Ревматолог', 'Инфекционист',
+        'Нефролог', 'Гематолог', 'Физиотерапевт', 'Анестезиолог', 'Радиолог',
+        'Патологоанатом', 'Семейный врач', 'Спортивный врач', 'Пластический хирург', 'Травматолог'
     ])[i],
     '+7 (495) ' || LPAD((100 + i)::TEXT, 3, '0') || '-' || LPAD((1000 + i * 111 % 9000)::TEXT, 4, '0'),
     'doctor' || i || '@cliniccore.local'
@@ -115,9 +115,9 @@ SELECT
     TO_CHAR(CURRENT_DATE + (i || ' days')::INTERVAL, 'YYYY-MM-DD') || ' 10:00',
     (ARRAY['Scheduled', 'Completed', 'Cancelled', 'Rescheduled'])[1 + (i % 4)],
     CASE
-        WHEN i % 3 = 0 THEN 'Initial visit'
-        WHEN i % 3 = 1 THEN 'Follow-up exam'
-        ELSE 'Lab results consultation'
+        WHEN i % 3 = 0 THEN 'Первичный приём'
+        WHEN i % 3 = 1 THEN 'Повторный осмотр'
+        ELSE 'Консультация по анализам'
     END
 FROM generate_series(1, 30) AS i;
 
@@ -127,28 +127,28 @@ SELECT
     ((i * 3 - 1) % 30) + 1,
     ((i * 5 - 1) % 30) + 1,
     (ARRAY[
-        'Paracetamol', 'Ibuprofen', 'Amoxicillin', 'Omeprazole', 'Loratadine',
-        'Aspirin', 'Metformin', 'Amlodipine', 'Atorvastatin', 'Levothyroxine',
-        'Cetirizine', 'Ambroxol', 'Nurofen', 'No-Spa', 'Analgin',
-        'Validol', 'Corvalol', 'Furacilin', 'Miramistin', 'Acriol',
-        'Diclofenac', 'Ketorol', 'Ciprofloxacin', 'Azithromycin', 'Fluconazole',
-        'Pancreatin', 'Mezym', 'Suprastin', 'Tavegil', 'Enalapril'
+        'Парацетамол', 'Ибупрофен', 'Амоксициллин', 'Омепразол', 'Лоратадин',
+        'Аспирин', 'Метформин', 'Амлодипин', 'Аторвастатин', 'Левотироксин',
+        'Цетиризин', 'Амброксол', 'Нурофен', 'Но-шпа', 'Анальгин',
+        'Валидол', 'Корвалол', 'Фурацилин', 'Мирамистин', 'Акриол',
+        'Диклофенак', 'Кеторол', 'Ципрофлоксацин', 'Азитромицин', 'Флуконазол',
+        'Панкреатин', 'Мезим', 'Супрастин', 'Тавегил', 'Эналаприл'
     ])[i],
     (ARRAY[
-        '500 mg 3 times daily', '200 mg twice daily', '250 mg 3 times daily',
-        '20 mg once daily', '10 mg once daily', '100 mg once daily',
-        '850 mg twice daily', '5 mg once daily', '10 mg at bedtime',
-        '50 mcg in the morning', '10 mg once daily', '30 mg 3 times daily',
-        '200 mg as needed', '40 mg twice daily', '500 mg as needed',
-        '1 tablet sublingual', '15 drops 3 times daily', '1 tablet dissolved',
-        '1 ml 3 times daily', 'as directed', '50 mg twice daily',
-        '10 mg IM', '500 mg twice daily', '500 mg once daily',
-        '150 mg once daily', '1 tablet with food', '1 tablet with food',
-        '1 tablet at bedtime', '1 tablet twice daily', '5 mg once daily'
+        '500 мг 3 раза в день', '200 мг 2 раза в день', '250 мг 3 раза в день',
+        '20 мг 1 раз в день', '10 мг 1 раз в день', '100 мг 1 раз в день',
+        '850 мг 2 раза в день', '5 мг 1 раз в день', '10 мг на ночь',
+        '50 мкг утром', '10 мг 1 раз в день', '30 мг 3 раза в день',
+        '200 мг при боли', '40 мг 2 раза в день', '500 мг по необходимости',
+        '1 таблетка под язык', '15 капель 3 раза в день', '1 таблетка растворить',
+        '1 мл 3 раза в день', 'по инструкции', '50 мг 2 раза в день',
+        '10 мг внутримышечно', '500 мг 2 раза в день', '500 мг 1 раз в день',
+        '150 мг 1 раз в день', '1 таблетка с едой', '1 таблетка с едой',
+        '1 таблетка на ночь', '1 таблетка 2 раза в день', '5 мг 1 раз в день'
     ])[i],
     CASE
-        WHEN i % 2 = 0 THEN 'Take after meals'
-        ELSE '7-day course'
+        WHEN i % 2 = 0 THEN 'Принимать после еды'
+        ELSE 'Курс 7 дней'
     END
 FROM generate_series(1, 30) AS i;
 
