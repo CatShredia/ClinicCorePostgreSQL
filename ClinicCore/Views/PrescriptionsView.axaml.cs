@@ -1,22 +1,55 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ClinicCore.Database;
+using ClinicCore.Localization;
 using ClinicCore.Models;
 using Npgsql;
 using System.Collections.ObjectModel;
 
 namespace ClinicCore.Views;
 
-public partial class PrescriptionsView : UserControl
+public partial class PrescriptionsView : LocalizableUserControl
 {
     private ObservableCollection<Prescription> _rxs = new();
     private int _editingId = -1;
+    private int _rxCount;
 
     public PrescriptionsView()
     {
         InitializeComponent();
         RxGrid.ItemsSource = _rxs;
+        ApplyLocalization();
         LoadRxs();
+    }
+
+    protected override void ApplyLocalization()
+    {
+        TxtTitle.Text = L.Get("Prescriptions");
+        BtnAdd.Content = L.Get("AddPrescription");
+        LblPatientId.Text = L.Get("PatientId");
+        LblDoctorId.Text = L.Get("DoctorId");
+        LblMedication.Text = L.Get("Medication");
+        LblDosage.Text = L.Get("Dosage");
+        LblNotes.Text = L.Get("Notes");
+        TxtPatientID.PlaceholderText = L.Get("PlaceholderPatientId");
+        TxtDoctorID.PlaceholderText = L.Get("PlaceholderDoctorId");
+        TxtMedication.PlaceholderText = L.Get("PlaceholderMedication");
+        TxtDosage.PlaceholderText = L.Get("PlaceholderDosage");
+        TxtNotes.PlaceholderText = L.Get("PlaceholderNotes");
+        BtnCancel.Content = L.Get("Cancel");
+        BtnSave.Content = L.Get("SavePrescription");
+        BtnEdit.Content = L.Get("EditSelected");
+        BtnDelete.Content = L.Get("DeleteSelected");
+        ColId.Text = L.Get("ColId");
+        ColPatientId.Text = L.Get("PatientId");
+        ColDoctorId.Text = L.Get("DoctorId");
+        ColMedication.Text = L.Get("Medication");
+        ColDosage.Text = L.Get("Dosage");
+        ColDate.Text = L.Get("IssuedDate");
+        ColNotes.Text = L.Get("Notes");
+        FormTitle.Text = _editingId == -1 ? L.Get("FormAddPrescription") : L.Get("FormEditPrescription");
+        if (_rxCount > 0)
+            RxCount.Text = L.Format("RxCount", _rxCount);
     }
 
     private void LoadRxs()
@@ -40,9 +73,10 @@ public partial class PrescriptionsView : UserControl
                     Notes          = reader["Notes"]?.ToString() ?? ""
                 });
             }
-            RxCount.Text = $"{_rxs.Count} prescription(s) issued";
+            _rxCount = _rxs.Count;
+            RxCount.Text = L.Format("RxCount", _rxCount);
         }
-        catch { RxCount.Text = "DB not connected"; }
+        catch { RxCount.Text = L.Get("DbNotConnectedShort"); }
         RxGrid.ItemsSource = null;
         RxGrid.ItemsSource = _rxs;
     }
@@ -50,7 +84,7 @@ public partial class PrescriptionsView : UserControl
     private void AddRx_Click(object? s, RoutedEventArgs e)
     {
         _editingId = -1;
-        FormTitle.Text = "Add New Prescription";
+        FormTitle.Text = L.Get("FormAddPrescription");
         ClearForm();
         FormPanel.IsVisible = true;
     }
@@ -91,7 +125,7 @@ public partial class PrescriptionsView : UserControl
     {
         if (RxGrid.SelectedItem is not Prescription rx) return;
         _editingId        = rx.PrescriptionID;
-        FormTitle.Text    = "Edit Prescription";
+        FormTitle.Text    = L.Get("FormEditPrescription");
         TxtPatientID.Text = rx.PatientID.ToString();
         TxtDoctorID.Text  = rx.DoctorID.ToString();
         TxtMedication.Text = rx.Medication;

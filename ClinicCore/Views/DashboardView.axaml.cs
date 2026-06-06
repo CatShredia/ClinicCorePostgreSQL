@@ -1,16 +1,46 @@
 using System;
 using Avalonia.Controls;
 using ClinicCore.Database;
+using ClinicCore.Localization;
 using Npgsql;
 
 namespace ClinicCore.Views;
 
-public partial class DashboardView : UserControl
+public partial class DashboardView : LocalizableUserControl
 {
+    private bool _connected;
+    private int _patients, _doctors, _appointments, _prescriptions;
+
     public DashboardView()
     {
         InitializeComponent();
+        ApplyLocalization();
         LoadStats();
+    }
+
+    protected override void ApplyLocalization()
+    {
+        TxtTitle.Text = L.Get("DashboardTitle");
+        TxtWelcome.Text = L.Get("Welcome");
+        LblPatients.Text = L.Get("Patients");
+        LblDoctors.Text = L.Get("Doctors");
+        LblAppointments.Text = L.Get("Appointments");
+        LblPrescriptions.Text = L.Get("Prescriptions");
+        LblPatientsSub.Text = L.Get("TotalRegistered");
+        LblDoctorsSub.Text = L.Get("TotalRegistered");
+        LblAppointmentsSub.Text = L.Get("TotalScheduled");
+        LblPrescriptionsSub.Text = L.Get("TotalIssued");
+        LblSystemInfo.Text = L.Get("SystemInfo");
+
+        if (_connected)
+            TxtInfo.Text = L.Format("DbInfo", "clinicdb", "localhost:5432", L.Get("Connected"));
+        else if (TxtInfo.Text != L.Get("Loading"))
+            TxtInfo.Text = L.Get("DbNotConnected");
+
+        TxtPatients.Text = _connected ? _patients.ToString() : "?";
+        TxtDoctors.Text = _connected ? _doctors.ToString() : "?";
+        TxtAppointments.Text = _connected ? _appointments.ToString() : "?";
+        TxtPrescriptions.Text = _connected ? _prescriptions.ToString() : "?";
     }
 
     private void LoadStats()
@@ -18,21 +48,23 @@ public partial class DashboardView : UserControl
         try
         {
             using var conn = DBHelper.GetConnection();
-            var patients      = GetCount(conn, @"SELECT COUNT(*) FROM ""Patients""");
-            var doctors       = GetCount(conn, @"SELECT COUNT(*) FROM ""Doctors""");
-            var appointments  = GetCount(conn, @"SELECT COUNT(*) FROM ""Appointments""");
-            var prescriptions = GetCount(conn, @"SELECT COUNT(*) FROM ""Prescriptions""");
+            _patients      = GetCount(conn, @"SELECT COUNT(*) FROM ""Patients""");
+            _doctors       = GetCount(conn, @"SELECT COUNT(*) FROM ""Doctors""");
+            _appointments  = GetCount(conn, @"SELECT COUNT(*) FROM ""Appointments""");
+            _prescriptions = GetCount(conn, @"SELECT COUNT(*) FROM ""Prescriptions""");
+            _connected = true;
 
-            TxtPatients.Text      = patients.ToString();
-            TxtDoctors.Text       = doctors.ToString();
-            TxtAppointments.Text  = appointments.ToString();
-            TxtPrescriptions.Text = prescriptions.ToString();
-            TxtInfo.Text = "Database: postgres  |  Server: localhost:5432  |  Status: Connected";
+            TxtPatients.Text      = _patients.ToString();
+            TxtDoctors.Text       = _doctors.ToString();
+            TxtAppointments.Text  = _appointments.ToString();
+            TxtPrescriptions.Text = _prescriptions.ToString();
+            TxtInfo.Text = L.Format("DbInfo", "clinicdb", "localhost:5432", L.Get("Connected"));
         }
         catch
         {
+            _connected = false;
             TxtPatients.Text = TxtDoctors.Text = TxtAppointments.Text = TxtPrescriptions.Text = "?";
-            TxtInfo.Text = "Database not connected";
+            TxtInfo.Text = L.Get("DbNotConnected");
         }
     }
 

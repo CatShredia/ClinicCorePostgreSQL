@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ClinicCore.Database;
+using ClinicCore.Localization;
 using ClinicCore.Models;
 using Npgsql;
 using System.Collections.ObjectModel;
@@ -8,16 +9,57 @@ using System;
 
 namespace ClinicCore.Views;
 
-public partial class PatientsView : UserControl
+public partial class PatientsView : LocalizableUserControl
 {
     private ObservableCollection<Patient> _patients = new();
     private int _editingId = -1;
+    private int _patientCount;
 
     public PatientsView()
     {
         InitializeComponent();
         PatientsGrid.ItemsSource = _patients;
+        ApplyLocalization();
         LoadPatients();
+    }
+
+    protected override void ApplyLocalization()
+    {
+        TxtTitle.Text = L.Get("Patients");
+        BtnAdd.Content = L.Get("AddPatient");
+        LblFullName.Text = L.Get("FullName");
+        LblDOB.Text = L.Get("DateOfBirth");
+        LblGender.Text = L.Get("Gender");
+        LblPhone.Text = L.Get("Phone");
+        LblAddress.Text = L.Get("Address");
+        TxtName.PlaceholderText = L.Get("PlaceholderFullName");
+        TxtDOB.PlaceholderText = L.Get("PlaceholderDOB");
+        TxtPhone.PlaceholderText = L.Get("PlaceholderPhone");
+        TxtAddress.PlaceholderText = L.Get("PlaceholderAddress");
+        BtnCancel.Content = L.Get("Cancel");
+        BtnSave.Content = L.Get("SavePatient");
+        BtnEdit.Content = L.Get("EditSelected");
+        BtnDelete.Content = L.Get("DeleteSelected");
+        ColId.Text = L.Get("ColId");
+        ColFullName.Text = L.Get("FullName");
+        ColDOB.Text = L.Get("DateOfBirth");
+        ColGender.Text = L.Get("Gender");
+        ColPhone.Text = L.Get("Phone");
+        ColAddress.Text = L.Get("Address");
+
+        var genderIndex = CmbGender.SelectedIndex;
+        CmbGender.Items.Clear();
+        CmbGender.Items.Add(new ComboBoxItem { Content = L.Get("Male"), Tag = "Male" });
+        CmbGender.Items.Add(new ComboBoxItem { Content = L.Get("Female"), Tag = "Female" });
+        if (genderIndex >= 0 && genderIndex < CmbGender.Items.Count)
+            CmbGender.SelectedIndex = genderIndex;
+
+        FormTitle.Text = _editingId == -1 ? L.Get("FormAddPatient") : L.Get("FormEditPatient");
+        if (_patientCount > 0)
+            PatientCount.Text = L.Format("PatientsCount", _patientCount);
+
+        if (_patients.Count > 0)
+            LoadPatients();
     }
 
     private void LoadPatients()
@@ -35,25 +77,26 @@ public partial class PatientsView : UserControl
                     PatientID   = reader.GetInt32(0),
                     FullName    = reader.GetString(1),
                     DateOfBirth = reader["DateOfBirth"]?.ToString() ?? "",
-                    Gender      = reader["Gender"]?.ToString() ?? "",
+                    Gender      = L.TranslateGender(reader["Gender"]?.ToString()),
                     Phone       = reader["Phone"]?.ToString() ?? "",
                     Address     = reader["Address"]?.ToString() ?? ""
                 });
             }
-            PatientCount.Text = $"{_patients.Count} patient(s) registered";
+            _patientCount = _patients.Count;
+            PatientCount.Text = L.Format("PatientsCount", _patientCount);
         }
         catch
         {
-            PatientCount.Text = "DB not connected — showing offline mode";
+            PatientCount.Text = L.Get("DbOffline");
         }
         PatientsGrid.ItemsSource = null;
-    PatientsGrid.ItemsSource = _patients;
+        PatientsGrid.ItemsSource = _patients;
     }
 
     private void AddPatient_Click(object? s, RoutedEventArgs e)
     {
         _editingId = -1;
-        FormTitle.Text = "Add New Patient";
+        FormTitle.Text = L.Get("FormAddPatient");
         ClearForm();
         FormPanel.IsVisible = true;
     }
@@ -84,9 +127,12 @@ public partial class PatientsView : UserControl
                     WHERE ""PatientID""=@id", conn);
                 cmd.Parameters.AddWithValue("@id", _editingId);
             }
+            var genderItem = CmbGender.SelectedItem as ComboBoxItem;
+            var genderDb = genderItem?.Tag?.ToString() ?? "Male";
+
             cmd.Parameters.AddWithValue("@n", TxtName.Text);
             cmd.Parameters.AddWithValue("@d", TxtDOB.Text ?? "");
-            cmd.Parameters.AddWithValue("@g", (CmbGender.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "");
+            cmd.Parameters.AddWithValue("@g", genderDb);
             cmd.Parameters.AddWithValue("@p", TxtPhone.Text ?? "");
             cmd.Parameters.AddWithValue("@a", TxtAddress.Text ?? "");
             cmd.ExecuteNonQuery();
@@ -98,7 +144,7 @@ public partial class PatientsView : UserControl
         {
             var box = new Window
             {
-                Title = "Error",
+                Title = L.Get("Error"),
                 Width = 500,
                 Height = 200,
                 Content = new TextBlock
@@ -116,11 +162,12 @@ public partial class PatientsView : UserControl
     {
         if (PatientsGrid.SelectedItem is not Patient p) return;
         _editingId = p.PatientID;
-        FormTitle.Text = "Edit Patient";
+        FormTitle.Text = L.Get("FormEditPatient");
         TxtName.Text    = p.FullName;
         TxtDOB.Text     = p.DateOfBirth;
         TxtPhone.Text   = p.Phone;
         TxtAddress.Text = p.Address;
+        CmbGender.SelectedIndex = p.Gender == L.Get("Female") ? 1 : 0;
         FormPanel.IsVisible = true;
     }
 

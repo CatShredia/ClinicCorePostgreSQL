@@ -6,10 +6,10 @@
         <Border Grid.Row="0" Padding="28,24,28,16">
             <Grid ColumnDefinitions="*,Auto">
                 <StackPanel Grid.Column="0" Spacing="4">
-                    <TextBlock Text="Prescriptions" FontSize="24" FontWeight="Bold" Foreground="Black"/>
+                    <TextBlock Name="TxtTitle" Text="Prescriptions" FontSize="24" FontWeight="Bold" Foreground="Black"/>
                     <TextBlock Name="RxCount" Text="Loading..." Foreground="#374151" FontSize="13"/>
                 </StackPanel>
-                <Button Grid.Column="1" Background="#3B82F6" Foreground="White" Padding="16,8" CornerRadius="6" Click="AddRx_Click">+ Add Prescription</Button>
+                <Button Name="BtnAdd" Grid.Column="1" Background="#3B82F6" Foreground="White" Padding="16,8" CornerRadius="6" Click="AddRx_Click">+ Add Prescription</Button>
             </Grid>
         </Border>
         <Border Grid.Row="1" Name="FormPanel" IsVisible="False" Background="White" Margin="28,0,28,16" Padding="24" CornerRadius="10">
@@ -17,36 +17,36 @@
                 <TextBlock Name="FormTitle" Text="Add New Prescription" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
                 <Grid ColumnDefinitions="*,16,*">
                     <StackPanel Grid.Column="0" Spacing="4">
-                        <TextBlock Text="Patient ID"/>
+                        <TextBlock Name="LblPatientId" Text="Patient ID"/>
                         <TextBox Name="TxtPatientID" PlaceholderText="Patient ID" Margin="0,0,0,8"/>
-                        <TextBlock Text="Doctor ID"/>
+                        <TextBlock Name="LblDoctorId" Text="Doctor ID"/>
                         <TextBox Name="TxtDoctorID" PlaceholderText="Doctor ID" Margin="0,0,0,8"/>
-                        <TextBlock Text="Medication"/>
+                        <TextBlock Name="LblMedication" Text="Medication"/>
                         <TextBox Name="TxtMedication" PlaceholderText="e.g. Paracetamol" Margin="0,0,0,8"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Spacing="4">
-                        <TextBlock Text="Dosage"/>
+                        <TextBlock Name="LblDosage" Text="Dosage"/>
                         <TextBox Name="TxtDosage" PlaceholderText="e.g. 500mg twice daily" Margin="0,0,0,8"/>
-                        <TextBlock Text="Notes"/>
+                        <TextBlock Name="LblNotes" Text="Notes"/>
                         <TextBox Name="TxtNotes" PlaceholderText="Optional notes" Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Grid>
                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" Margin="0,12,0,0">
-                    <Button Background="#6B7280" Foreground="White" Padding="16,8" CornerRadius="6" Click="CancelForm_Click">Cancel</Button>
-                    <Button Background="#3B82F6" Foreground="White" Padding="16,8" CornerRadius="6" Click="SaveRx_Click">Save Prescription</Button>
+                    <Button Name="BtnCancel" Background="#6B7280" Foreground="White" Padding="16,8" CornerRadius="6" Click="CancelForm_Click">Cancel</Button>
+                    <Button Name="BtnSave" Background="#3B82F6" Foreground="White" Padding="16,8" CornerRadius="6" Click="SaveRx_Click">Save Prescription</Button>
                 </StackPanel>
             </StackPanel>
         </Border>
         <Border Grid.Row="2" Margin="28,0,28,0" CornerRadius="10" ClipToBounds="True" Background="White">
             <DockPanel>
                 <Grid ColumnDefinitions="60,80,80,180,150,120,*" Background="#F1F5F9" DockPanel.Dock="Top">
-                    <TextBlock Grid.Column="0" Text="ID"         FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
-                    <TextBlock Grid.Column="1" Text="Patient ID" FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
-                    <TextBlock Grid.Column="2" Text="Doctor ID"  FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
-                    <TextBlock Grid.Column="3" Text="Medication"  FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
-                    <TextBlock Grid.Column="4" Text="Dosage"     FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
-                    <TextBlock Grid.Column="5" Text="Date"       FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
-                    <TextBlock Grid.Column="6" Text="Notes"      FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
+                    <TextBlock Name="ColId" Grid.Column="0" Text="ID" FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
+                    <TextBlock Name="ColPatientId" Grid.Column="1" Text="Patient ID" FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
+                    <TextBlock Name="ColDoctorId" Grid.Column="2" Text="Doctor ID" FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
+                    <TextBlock Name="ColMedication" Grid.Column="3" Text="Medication" FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
+                    <TextBlock Name="ColDosage" Grid.Column="4" Text="Dosage" FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
+                    <TextBlock Name="ColDate" Grid.Column="5" Text="Date" FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
+                    <TextBlock Name="ColNotes" Grid.Column="6" Text="Notes" FontWeight="Bold" Padding="10,8" FontSize="13" Foreground="Black"/>
                 </Grid>
                 <ListBox Name="RxGrid" Background="White" Foreground="Black">
                     <ListBox.ItemTemplate>
@@ -67,8 +67,8 @@
         </Border>
         <Border Grid.Row="3" Padding="28,12">
             <StackPanel Orientation="Horizontal" Spacing="8">
-                <Button Background="#6B7280" Foreground="White" Padding="16,8" CornerRadius="6" Click="EditRx_Click">Edit Selected</Button>
-                <Button Background="#EF4444" Foreground="White" Padding="16,8" CornerRadius="6" Click="DeleteRx_Click">Delete Selected</Button>
+                <Button Name="BtnEdit" Background="#6B7280" Foreground="White" Padding="16,8" CornerRadius="6" Click="EditRx_Click">Edit Selected</Button>
+                <Button Name="BtnDelete" Background="#EF4444" Foreground="White" Padding="16,8" CornerRadius="6" Click="DeleteRx_Click">Delete Selected</Button>
             </StackPanel>
         </Border>
     </Grid>

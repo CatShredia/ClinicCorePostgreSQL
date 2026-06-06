@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ClinicCore.Database;
+using ClinicCore.Localization;
 using ClinicCore.Models;
 using Npgsql;
 using System.Collections.ObjectModel;
@@ -8,16 +9,48 @@ using System;
 
 namespace ClinicCore.Views;
 
-public partial class AppointmentsView : UserControl
+public partial class AppointmentsView : LocalizableUserControl
 {
     private ObservableCollection<Appointment> _appts = new();
     private int _editingId = -1;
+    private int _apptCount;
 
     public AppointmentsView()
     {
         InitializeComponent();
         ApptsGrid.ItemsSource = _appts;
+        ApplyLocalization();
         LoadAppts();
+    }
+
+    protected override void ApplyLocalization()
+    {
+        TxtTitle.Text = L.Get("Appointments");
+        BtnAdd.Content = L.Get("AddAppointment");
+        LblPatientId.Text = L.Get("PatientId");
+        LblDoctorId.Text = L.Get("DoctorId");
+        LblDate.Text = L.Get("DateTime");
+        LblNotes.Text = L.Get("Notes");
+        TxtPatientID.PlaceholderText = L.Get("PlaceholderPatientId");
+        TxtDoctorID.PlaceholderText = L.Get("PlaceholderDoctorId");
+        TxtDate.PlaceholderText = L.Get("PlaceholderDateTime");
+        TxtNotes.PlaceholderText = L.Get("PlaceholderNotes");
+        BtnCancel.Content = L.Get("Cancel");
+        BtnSave.Content = L.Get("SaveAppointment");
+        BtnEdit.Content = L.Get("EditSelected");
+        BtnDelete.Content = L.Get("DeleteSelected");
+        ColId.Text = L.Get("ColId");
+        ColPatientId.Text = L.Get("PatientId");
+        ColDoctorId.Text = L.Get("DoctorId");
+        ColDate.Text = L.Get("Date");
+        ColStatus.Text = L.Get("Status");
+        ColNotes.Text = L.Get("Notes");
+        FormTitle.Text = _editingId == -1 ? L.Get("FormAddAppointment") : L.Get("FormEditAppointment");
+        if (_apptCount > 0)
+            ApptCount.Text = L.Format("ApptsCount", _apptCount);
+
+        if (_appts.Count > 0)
+            LoadAppts();
     }
 
     private void LoadAppts()
@@ -36,13 +69,14 @@ public partial class AppointmentsView : UserControl
                     PatientID       = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
                     DoctorID        = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
                     AppointmentDate = reader["AppointmentDate"]?.ToString() ?? "",
-                    Status          = reader["Status"]?.ToString() ?? "",
+                    Status          = L.TranslateStatus(reader["Status"]?.ToString()),
                     Notes           = reader["Notes"]?.ToString() ?? ""
                 });
             }
-            ApptCount.Text = $"{_appts.Count} appointment(s) scheduled";
+            _apptCount = _appts.Count;
+            ApptCount.Text = L.Format("ApptsCount", _apptCount);
         }
-        catch { ApptCount.Text = "DB not connected"; }
+        catch { ApptCount.Text = L.Get("DbNotConnectedShort"); }
         ApptsGrid.ItemsSource = null;
         ApptsGrid.ItemsSource = _appts;
     }
@@ -50,7 +84,7 @@ public partial class AppointmentsView : UserControl
     private void AddAppt_Click(object? s, RoutedEventArgs e)
     {
         _editingId = -1;
-        FormTitle.Text = "Add New Appointment";
+        FormTitle.Text = L.Get("FormAddAppointment");
         ClearForm();
         FormPanel.IsVisible = true;
     }
@@ -91,7 +125,7 @@ public partial class AppointmentsView : UserControl
     {
         if (ApptsGrid.SelectedItem is not Appointment a) return;
         _editingId = a.AppointmentID;
-        FormTitle.Text    = "Edit Appointment";
+        FormTitle.Text    = L.Get("FormEditAppointment");
         TxtPatientID.Text = a.PatientID.ToString();
         TxtDoctorID.Text  = a.DoctorID.ToString();
         TxtDate.Text      = a.AppointmentDate;

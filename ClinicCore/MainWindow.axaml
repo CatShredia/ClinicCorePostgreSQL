@@ -24,33 +24,68 @@
             <Setter Property="Background" Value="#3B82F6"/>
             <Setter Property="TextElement.Foreground" Value="White"/>
         </Style>
+        <Style Selector="Button.langBtn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#8892B0"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#2D3748"/>
+            <Setter Property="MinWidth" Value="44"/>
+        </Style>
+        <Style Selector="Button.langBtn.active /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3B82F6"/>
+            <Setter Property="TextElement.Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.langBtn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#252B45"/>
+            <Setter Property="TextElement.Foreground" Value="#CDD6F4"/>
+        </Style>
     </Window.Styles>
 
     <Grid ColumnDefinitions="230,*">
 
         <!-- SIDEBAR -->
         <Border Grid.Column="0" Background="#1A1F36">
-            <StackPanel>
-                <Border Background="#12172B" Padding="20,26">
+            <DockPanel>
+                <Border DockPanel.Dock="Top" Background="#12172B" Padding="20,26">
                     <StackPanel Spacing="3">
                         <TextBlock Text="ClinicCore"
                                    Foreground="White" FontSize="20" FontWeight="Bold"/>
-                        <TextBlock Text="Hospital Records System"
+                        <TextBlock Name="TxtSubtitle"
+                                   Text="Hospital Records System"
                                    Foreground="#4A5568" FontSize="11"/>
                     </StackPanel>
                 </Border>
 
-                <TextBlock Text="MENU" Foreground="#4A5568" FontSize="11"
-                           FontWeight="SemiBold" Margin="20,20,0,8"/>
+                <Border DockPanel.Dock="Bottom" Padding="16,16">
+                    <StackPanel Spacing="8">
+                        <TextBlock Name="TxtLanguageLabel"
+                                   Text="Language"
+                                   Foreground="#4A5568" FontSize="11" FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Button Name="BtnLangEn" Classes="langBtn" Click="LangEn_Click">EN</Button>
+                            <Button Name="BtnLangRu" Classes="langBtn active" Click="LangRu_Click">RU</Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
 
-                <StackPanel Name="NavPanel" Margin="10,0" Spacing="2">
-                    <Button Classes="navBtn" Tag="Dashboard" Click="Nav_Click">Dashboard</Button>
-                    <Button Classes="navBtn active" Tag="Patients" Click="Nav_Click">Patients</Button>
-                    <Button Classes="navBtn" Tag="Doctors" Click="Nav_Click">Doctors</Button>
-                    <Button Classes="navBtn" Tag="Appointments" Click="Nav_Click">Appointments</Button>
-                    <Button Classes="navBtn" Tag="Prescriptions" Click="Nav_Click">Prescriptions</Button>
+                <StackPanel Margin="0,0,0,0">
+                    <TextBlock Name="TxtMenu"
+                               Text="MENU" Foreground="#4A5568" FontSize="11"
+                               FontWeight="SemiBold" Margin="20,20,0,8"/>
+
+                    <StackPanel Name="NavPanel" Margin="10,0" Spacing="2">
+                        <Button Name="BtnDashboard" Classes="navBtn active" Tag="Dashboard" Click="Nav_Click">Dashboard</Button>
+                        <Button Name="BtnPatients" Classes="navBtn" Tag="Patients" Click="Nav_Click">Patients</Button>
+                        <Button Name="BtnDoctors" Classes="navBtn" Tag="Doctors" Click="Nav_Click">Doctors</Button>
+                        <Button Name="BtnAppointments" Classes="navBtn" Tag="Appointments" Click="Nav_Click">Appointments</Button>
+                        <Button Name="BtnPrescriptions" Classes="navBtn" Tag="Prescriptions" Click="Nav_Click">Prescriptions</Button>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </DockPanel>
         </Border>
 
         <!-- CONTENT AREA -->

@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ClinicCore.Database;
+using ClinicCore.Localization;
 using ClinicCore.Models;
 using Npgsql;
 using System.Collections.ObjectModel;
@@ -8,16 +9,44 @@ using System;
 
 namespace ClinicCore.Views;
 
-public partial class DoctorsView : UserControl
+public partial class DoctorsView : LocalizableUserControl
 {
     private ObservableCollection<Doctor> _doctors = new();
     private int _editingId = -1;
+    private int _doctorCount;
 
     public DoctorsView()
     {
         InitializeComponent();
         DoctorsGrid.ItemsSource = _doctors;
+        ApplyLocalization();
         LoadDoctors();
+    }
+
+    protected override void ApplyLocalization()
+    {
+        TxtTitle.Text = L.Get("Doctors");
+        BtnAdd.Content = L.Get("AddDoctor");
+        LblFullName.Text = L.Get("FullName");
+        LblSpecialty.Text = L.Get("Specialty");
+        LblPhone.Text = L.Get("Phone");
+        LblEmail.Text = L.Get("Email");
+        TxtName.PlaceholderText = L.Get("PlaceholderDoctorName");
+        TxtSpecialty.PlaceholderText = L.Get("PlaceholderSpecialty");
+        TxtPhone.PlaceholderText = L.Get("PlaceholderPhone");
+        TxtEmail.PlaceholderText = L.Get("PlaceholderEmail");
+        BtnCancel.Content = L.Get("Cancel");
+        BtnSave.Content = L.Get("SaveDoctor");
+        BtnEdit.Content = L.Get("EditSelected");
+        BtnDelete.Content = L.Get("DeleteSelected");
+        ColId.Text = L.Get("ColId");
+        ColFullName.Text = L.Get("FullName");
+        ColSpecialty.Text = L.Get("Specialty");
+        ColPhone.Text = L.Get("Phone");
+        ColEmail.Text = L.Get("Email");
+        FormTitle.Text = _editingId == -1 ? L.Get("FormAddDoctor") : L.Get("FormEditDoctor");
+        if (_doctorCount > 0)
+            DoctorCount.Text = L.Format("DoctorsCount", _doctorCount);
     }
 
     private void LoadDoctors()
@@ -39,9 +68,10 @@ public partial class DoctorsView : UserControl
                     Email     = reader["Email"]?.ToString() ?? ""
                 });
             }
-            DoctorCount.Text = $"{_doctors.Count} doctor(s) registered";
+            _doctorCount = _doctors.Count;
+            DoctorCount.Text = L.Format("DoctorsCount", _doctorCount);
         }
-        catch { DoctorCount.Text = "DB not connected"; }
+        catch { DoctorCount.Text = L.Get("DbNotConnectedShort"); }
         DoctorsGrid.ItemsSource = null;
         DoctorsGrid.ItemsSource = _doctors;
     }
@@ -49,7 +79,7 @@ public partial class DoctorsView : UserControl
     private void AddDoctor_Click(object? s, RoutedEventArgs e)
     {
         _editingId = -1;
-        FormTitle.Text = "Add New Doctor";
+        FormTitle.Text = L.Get("FormAddDoctor");
         ClearForm();
         FormPanel.IsVisible = true;
     }
@@ -90,7 +120,7 @@ public partial class DoctorsView : UserControl
     {
         if (DoctorsGrid.SelectedItem is not Doctor d) return;
         _editingId = d.DoctorID;
-        FormTitle.Text   = "Edit Doctor";
+        FormTitle.Text   = L.Get("FormEditDoctor");
         TxtName.Text     = d.FullName;
         TxtSpecialty.Text = d.Specialty;
         TxtPhone.Text    = d.Phone;
